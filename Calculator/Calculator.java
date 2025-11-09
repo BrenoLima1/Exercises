@@ -24,30 +24,33 @@ public double divide(double a, double b) {
 
     public static void main(String[] args) {
         Calculator calculator = new Calculator();
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Welcome to Calculator! You can use any number!");
-        System.out.println("Choose operation (+, -, *, /):");
-        char operator = sc.next().charAt(0);
-        System.out.println("First number: ");
-        double firstNumber = sc.nextDouble();
-        System.out.println("Second number: ");
-        double secondNumber = sc.nextDouble();
+       try (Scanner sc = new Scanner(System.in)) {
+           System.out.println("Welcome to Calculator! You can use any number!");
+           System.out.println("Choose operation (+, -, *, /):");
+           char operator = sc.next().charAt(0);
+           System.out.println("First number: ");
+           double firstNumber = sc.nextDouble();
+           System.out.println("Second number: ");
+           double secondNumber = sc.nextDouble();
 
-        switch (operator) {
-            case '+':
-                System.out.println("Result: " + calculator.add(firstNumber, secondNumber));
-                break;
-            case '-':
-                System.out.println("Result: " + calculator.subtract(firstNumber, secondNumber));
-                break;
-            case '*':
-                System.out.println("Result: " + calculator.multiply(firstNumber, secondNumber));
-                break;
-            case '/':
-                System.out.println("Result: " + calculator.divide(firstNumber, secondNumber));
-                break;
-            default:
-                System.out.println("Invalid operator");
-        }
+           switch (operator) {
+               case '+':
+                   System.out.println("Result: " + calculator.add(firstNumber, secondNumber));
+                   break;
+               case '-':
+                   System.out.println("Result: " + calculator.subtract(firstNumber, secondNumber));
+                   break;
+               case '*':
+                   System.out.println("Result: " + calculator.multiply(firstNumber, secondNumber));
+                   break;
+               case '/':
+                   System.out.println("Result: " + calculator.divide(firstNumber, secondNumber));
+                   break;
+               default:
+                   System.out.println("Invalid operator");
+           }
+       } catch (ArithmeticException e) {
+           System.out.println("Error: " + e.getMessage());
+       }
     }
 }
