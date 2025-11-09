@@ -2,7 +2,6 @@ package entities;
 
 public class User {
 
-    private int code;
     private String name;
     private String login;
     private String password;
@@ -13,14 +12,6 @@ public class User {
         this.login = login;
         this.name = name;
         this.password = password;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
     }
 
     public String getName() {
@@ -55,5 +46,14 @@ public class User {
         this.email = email;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 
 }
