@@ -29,39 +29,46 @@ public class UserDAO {
         }
     }
 
-    public void deleteUser(int id) {
-        String query = "DELETE FROM user WHERE iduser = ?";
-        if (findUser(id) != null) {
-            PreparedStatement ps = null;
-            try {
-                ps = Connect.getConnection().prepareStatement(query);
-                ps.setInt(1, id);
-                ps.executeUpdate();
-                ps.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }else {
-            System.out.println("User not found");
-        }
-        }
+  public boolean deleteUser(int id) {
+    String query = "DELETE FROM user WHERE iduser = ?";
+    try (PreparedStatement ps = Connect.getConnection().prepareStatement(query)) {
+        ps.setInt(1, id);
+        int rowsAffected = ps.executeUpdate();
 
-    public void updateUser(int id, User user) {
-        String query = "UPDATE user SET name = ?, login = ?, password = ?, email = ? WHERE iduser = ?";
-        PreparedStatement ps = null;
-        try {
-            ps = Connect.getConnection().prepareStatement(query);
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getLogin());
-            ps.setString(3, user.getPassword());
-            ps.setString(4, user.getEmail());
-            ps.setInt(5, id);
-            ps.executeUpdate();
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (rowsAffected > 0) {
+            System.out.println("User deleted successfully.");
+            return true;
+        } else {
+            System.out.println("User not found.");
+            return false;
         }
+    } catch (SQLException e) {
+        e.printStackTrace(); // ou usar um logger
+        return false;
     }
+}
+
+ public boolean updateUser(int id, User user) {
+    String query = "UPDATE user SET name = ?, login = ?, password = ?, email = ? WHERE iduser = ?";
+    try (PreparedStatement ps = Connect.getConnection().prepareStatement(query)) {
+        ps.setString(1, user.getName());
+        ps.setString(2, user.getLogin());
+        ps.setString(3, user.getPassword());
+        ps.setString(4, user.getEmail());
+        ps.setInt(5, id);
+
+        int rowsAffected = ps.executeUpdate();
+        if (rowsAffected > 0) {
+            return true;
+        } else {
+            System.out.println("User not found.");
+            return false;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 
     public User findUser(int id) {
         String query = "SELECT * FROM user WHERE iduser = ?";
