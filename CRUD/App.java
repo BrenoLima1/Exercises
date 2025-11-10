@@ -1,6 +1,6 @@
-
 import DAO.UserDAO;
 import entities.User;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -8,74 +8,85 @@ public class App {
         UserDAO userDAO = new UserDAO();
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Do you want to register, delete, update, find a user or find all users?");
+        while (true) {
+            System.out.println("\n=== User Management ===");
+            System.out.println("1 - Register");
+            System.out.println("2 - Delete");
+            System.out.println("3 - Update");
+            System.out.println("4 - Find");
+            System.out.println("5 - Find All");
+            System.out.println("0 - Exit");
+            System.out.print("Choose an option: ");
 
-        System.out.println("1 - Register");
-        System.out.println("2 - Delete");
-        System.out.println("3 - Update");
-        System.out.println("4 - Find");
-        System.out.println("5 - Find All");
-        int op = sc.nextInt();
-        sc.nextLine();
-
-        if (op == 1) {
-            System.out.println("Register:");
-            System.out.print("Name: "); String name = sc.nextLine();
-            System.out.print("Login: "); String login = sc.next(); sc.nextLine();
-            System.out.print("Password: "); String password = sc.nextLine();
-            System.out.print("Email: "); String email = sc.nextLine();
-
-            User user = new User(
-                name,
-                login,
-                password,
-                email
-            );
-
-            userDAO.registerUser(user);
-        }else if (op == 2) {
-            System.out.println("Delete:");
-            System.out.print("User's ID: "); int code = sc.nextInt();
-            userDAO.deleteUser(code);
-        }else if (op == 3) {
-            System.out.println("Update:");
-            System.out.print("User's ID: "); int userID = sc.nextInt(); sc.nextLine();
-
-            User user = userDAO.findUser(userID);
-            if (user == null) {
-                System.out.println("User not found.");
-                return;
+            int op;
+            try {
+                op = Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid option. Try again.");
+                continue;
             }
 
-            System.out.print("Name: "); String name = sc.nextLine();
-            System.out.print("Login: "); String login = sc.nextLine();
-            System.out.print("Password: "); String password = sc.nextLine();
-            System.out.print("Email: "); String email = sc.nextLine();
-
-            User updatedUser = new User(
-                name,
-                login,
-                password,
-                email
-            );
-
-            boolean success = userDAO.updateUser(userID, updatedUser);
-            if(success){
-                System.out.println("User updated successfully.");
-            }else{
-                System.out.println("Update failed :(");
+            if (op == 0) {
+                System.out.println("Exiting...");
+                break;
             }
 
-        }else if (op == 4) {
-            System.out.println("Find:");
-            System.out.print("User's ID: "); int userID = sc.nextInt();
-            User user = userDAO.findUser(userID);
-            System.out.println(user);
-        }else if (op == 5) {
-            System.out.println("Find All:");
-            User[] users = userDAO.findAllUsers();
-            for (User user : users) {
-                System.out.println(user);
+            switch (op) {
+                case 1 -> {
+                    System.out.println("Register:");
+                    System.out.print("Name: "); String name = sc.nextLine();
+                    System.out.print("Login: "); String login = sc.nextLine();
+                    System.out.print("Password: "); String password = sc.nextLine();
+                    System.out.print("Email: "); String email = sc.nextLine();
+
+                    User user = new User(name, login, password, email);
+                    boolean success = userDAO.registerUser(user);
+                    System.out.println(success ? "User registered successfully." : "Registration failed.");
+                }
+                case 2 -> {
+                    System.out.println("Delete:");
+                    System.out.print("User's ID: ");
+                    int code = Integer.parseInt(sc.nextLine());
+                    boolean success = userDAO.deleteUser(code);
+                    System.out.println(success ? "User deleted successfully." : "User not found.");
+                }
+                case 3 -> {
+                    System.out.println("Update:");
+                    System.out.print("User's ID: ");
+                    int userID = Integer.parseInt(sc.nextLine());
+
+                    User existingUser = userDAO.findUser(userID);
+                    if (existingUser == null) {
+                        System.out.println("User not found.");
+                        continue;
+                    }
+
+                    System.out.print("Name: "); String name = sc.nextLine();
+                    System.out.print("Login: "); String login = sc.nextLine();
+                    System.out.print("Password: "); String password = sc.nextLine();
+                    System.out.print("Email: "); String email = sc.nextLine();
+
+                    User updatedUser = new User(name, login, password, email);
+                    boolean success = userDAO.updateUser(userID, updatedUser);
+                    System.out.println(success ? "User updated successfully." : "Update failed.");
+                }
+                case 4 -> {
+                    System.out.println("Find:");
+                    System.out.print("User's ID: ");
+                    int userID = Integer.parseInt(sc.nextLine());
+                    User user = userDAO.findUser(userID);
+                    System.out.println(user != null ? user : "User not found.");
+                }
+                case 5 -> {
+                    System.out.println("Find All:");
+                    List<User> users = userDAO.findAllUsers();
+                    if (users.isEmpty()) {
+                        System.out.println("No users found.");
+                    } else {
+                        users.forEach(System.out::println);
+                    }
+                }
+                default -> System.out.println("Invalid option. Try again.");
             }
         }
 
