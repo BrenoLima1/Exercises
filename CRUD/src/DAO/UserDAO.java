@@ -52,16 +52,17 @@ public class UserDAO {
 
     public User findUser(int id) {
         String query = "SELECT * FROM user WHERE iduser = ?";
-        try (PreparedStatement ps = Connect.getConnection().prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
-            ps.setInt(1, id);
-            if (rs.next()) {
-                return new User(
-                    rs.getString("name"),
-                    rs.getString("login"),
-                    rs.getString("password"),
-                    rs.getString("email")
-                );
+        try (PreparedStatement ps = Connect.getConnection().prepareStatement(query)) {
+            ps.setInt(1, id); // define o parâmetro antes
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                            rs.getString("name"),
+                            rs.getString("login"),
+                            rs.getString("password"),
+                            rs.getString("email")
+                    );
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
