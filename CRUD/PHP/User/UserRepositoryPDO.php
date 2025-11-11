@@ -33,14 +33,23 @@ class UserRepositoryPDO implements UserRepository {
     }
 
     public function saveUser(User $user): void {
-        $stmt = $this->pdo->prepare("INSERT INTO user (name, login, email, password) VALUES (:name, :login, :email, :password)");
+    try {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO user (name, login, email, password)
+            VALUES (:name, :login, :email, :password)
+        ");
+
         $stmt->execute([
             'name' => $user->getName(),
             'login' => $user->getLogin(),
             'email' => $user->getEmail(),
             'password' => $user->getPassword()
         ]);
+    } catch (PDOException $e) {
+        echo "Erro ao salvar usuário: " . $e->getMessage() . PHP_EOL;
+        throw $e;
     }
+}
 
     public function removeUser(int $id): void {
         try {
@@ -52,6 +61,27 @@ class UserRepositoryPDO implements UserRepository {
             $this->pdo->rollBack();
             throw $th;
         }
+    }
+
+    public function update(int $id, User $user): bool {
+        try {
+            $this->pdo->beginTransaction();
+            $stmt = $this->pdo->prepare("UPDATE user SET name = :name, login = :login, email = :email, password = :password WHERE iduser = :id");
+            $stmt->execute([
+                'name' => $user->getName(),
+                'login' => $user->getLogin(),
+                'email' => $user->getEmail(),
+                'password' => $user->getPassword(),
+                'id' => $id
+            ]);
+            $this->pdo->commit();
+            return $stmt->rowCount() > 0;
+
+        } catch (\Throwable $th) {
+            $this->pdo->rollBack();
+            throw $th;
+        }
+
     }
 }
 

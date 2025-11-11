@@ -47,6 +47,21 @@ class UserController{
         }
     }
 
+    public function updateUser(int $id, User $user): void {
+        try {
+            $this->userRepository->update($id, $user);
+            $this->userView->showMessage("User updated successfully.");
+        }catch (PDOException $th) {
+            $this->userView->showMessage($th->getMessage());
+            throw $th;
+        }
+    }
+
+    public function createUser(array $data): User {
+        $user = new User($data['name'], $data['login'], $data['email'], $data['password']);
+        return $user;
+    }
+
 }
 
 

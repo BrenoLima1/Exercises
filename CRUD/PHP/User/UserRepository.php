@@ -5,6 +5,7 @@ interface UserRepository {
     public function findAll(): array;
     public function saveUser(User $user): void;
     public function removeUser(int $id): void;
+    public function update(int $id, User $user): bool;
 }
 
 ?>

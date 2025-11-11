@@ -24,5 +24,13 @@ class UserView{
         echo $message . PHP_EOL;
     }
 
+    public function askUserData(): array {
+        $name = readline("Name: ");
+        $login = readline("Login: ");
+        $email = readline("Email: ");
+        $password = readline("Password: ");
+        return compact('name', 'login', 'email', 'password');
+}
+
 }
 ?>

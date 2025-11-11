@@ -58,6 +58,10 @@ class User {
     public function __toString(): string {
         return "{$this->id} - {$this->name} ({$this->email})";
     }
+
+    public static function create(string $name, string $login, string $email, string $password): User {
+    return new User($name, $login, $email, $password, 0);
+}
 }
 
 ?>
